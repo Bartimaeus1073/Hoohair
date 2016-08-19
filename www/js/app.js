@@ -43,38 +43,62 @@ function restoreIcon(elem) {
 }
 
 hoohair.controller("formController", function($scope, $ionicScrollDelegate, $ionicPopup, $timeout) {
+  $scope.inserting = false;
+
   function Item(value, name) {
     this.value = value;
     this.name = name;
   }
 
-  function errorPopup(text) {
-    var alertPopup = $ionicPopup.alert({
+  function errorPopup(text, func) {
+    var myPopup = $ionicPopup.show({
+      template: '',
       title: text,
-      okType: 'button-assertive'
+      scope: $scope,
+      buttons: [
+        {
+          text: "<b>OK</b>",
+          type: 'button-assertive',
+          onTap: func
+        }
+      ]
     });
   }
 
-  function informativePopup(text) {
-    var alertPopup = $ionicPopup.alert({
-      title: text
+  function informativePopup(text, func) {
+    var myPopup = $ionicPopup.show({
+      template: '',
+      title: text,
+      scope: $scope,
+      buttons: [
+        {
+          text: "<b>OK</b>",
+          type: 'button-positive',
+          onTap: func
+        }
+      ]
     });
   }
 
   function insert(email, firstName, lastName) {
+    $scope.inserting = true;
     // check mail existance
     firebase.database().ref(email).once('value').then(function(snapshot) {
       var alreadyExists = snapshot.val() != null;
 
       if (alreadyExists) {
-        errorPopup("Email already exists!");
+        errorPopup("Email already exists!", function() {
+          $scope.inserting = false;
+        });
       } else {
         firebase.database().ref(email).set({
           first_name: firstName,
           last_name: lastName
         });
 
-        informativePopup("Thank you for registering!");
+        informativePopup("Thank you for registering!", function() {
+          $scope.inserting = false;
+        });
       }
     });
   }
@@ -93,11 +117,22 @@ hoohair.controller("formController", function($scope, $ionicScrollDelegate, $ion
           return;
         }
       }
-      document.getElementById("submit-button").focus();
+
+      // blur inputs to hide keyboard
+      for (var i = 0; i < $scope.items.length; i++) {
+        var id = "input_" + $scope.items[i].name;
+        document.getElementById(id).blur();
+      }
+
+      $scope.register();
     }
   };
 
   $scope.register = function() {
+    if ($scope.inserting == true) {
+      return;
+    }
+
     var firstName = $scope.items[0].value;
     var lastName = $scope.items[1].value;
     var email = $scope.items[2].value;
