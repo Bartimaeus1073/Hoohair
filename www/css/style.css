@@ -1,0 +1,68 @@
+#main-page {
+  color: white;
+  background: linear-gradient(#55EDCC, #5BCDFD);
+  text-align: center;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+#main-page > .row {
+  flex-grow: 1;
+}
+
+#main-page .row-header {
+  flex-grow: 1.5;
+}
+
+#main-page button {
+  padding: 8px 20px;
+  margin: auto;
+}
+
+#main-page button:hover {
+  color: black;
+  background-color: white;
+}
+
+#main-page input {
+  color: white;
+}
+
+#main-page h4 {
+  color: white;
+  margin: 20px auto;
+}
+
+#main-page hr {
+  border: none;
+  height: 1px;
+  background-color: white;
+}
+
+#main-page i {
+  color: white;
+  font-size: 40px;
+  margin: 0px 10px;
+}
+
+#main-page i:hover {
+  color: #333;
+}
+
+#main-page .form-item {
+  color: white;
+  background-color: transparent;
+  border: 2px solid white;
+  border-radius: 4px;
+}
+
+#main-page .item-input {
+  padding: 0px 15px;
+  margin: 10px auto;
+}
+
+*::-webkit-input-placeholder {
+  color: white !important;
+}
