@@ -119,19 +119,23 @@ hoohair.controller("formController", function($scope, $ionicScrollDelegate, $ion
     $scope.inserting = true;
     // check mail existance
     var path = "users/";
-    firebase.database().ref(path).once('value').then(function(snapshot) {
-      var alreadyExists = false;//snapshot.val() != null;
+    var ref = firebase.database().ref(path);
 
-      if (alreadyExists) {
-        errorPopup("Email already exists!", function() {
-          $scope.inserting = false;
-        });
-      } else {
-        firebase.database().ref(path).push({
-          first_name: credentials.firstName,
-          last_name: credentials.lastName,
-          email: credentials.email
-        }).then(function() {
+    ref.once('value').then(function(snapshot) {
+      // check for duplicates
+      var alreadyExists = false;
+      snapshot.forEach(function(childSnapshot) {
+        if (childSnapshot.val().email == credentials.email) {
+          errorPopup("Email already exists!", function() {
+            $scope.inserting = false;
+          });
+          alreadyExists = true;
+        }
+      });
+
+      if (!alreadyExists) {
+        // there are no duplicates so add credentials
+        ref.push(credentials).then(function() {
           informativePopup("Thank you for registering!", function() {
             $scope.inserting = false;
           });
@@ -197,8 +201,8 @@ hoohair.controller("formController", function($scope, $ionicScrollDelegate, $ion
     }
 
     insert({
-      firstName: firstName.value,
-      lastName: lastName.value,
+      first_name: firstName.value,
+      last_name: lastName.value,
       email: email.value
     });
   };
