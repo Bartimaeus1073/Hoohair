@@ -8,6 +8,19 @@
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 
+
+    <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyCYKN_XiqW2dE8Sy7OY_9ynIDkT6rUjUaA",
+        authDomain: "hoohair-e9b51.firebaseapp.com",
+        databaseURL: "https://hoohair-e9b51.firebaseio.com",
+        storageBucket: "hoohair-e9b51.appspot.com",
+      };
+      firebase.initializeApp(config);
+    </script>
+
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
     -->
@@ -24,57 +37,55 @@
   <body ng-app="Hoohair">
 
     <ion-view>
-      <ion-content scroll=false id="main-page" class="padding">
-        <div class="row row-header">
-          <div class="col">
-            <h4>Coming soon!</h4>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            Logo
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <i class="icon ion-social-twitter" onclick="window.open('http://www.twitter.com/nraboy', '_system', 'location=yes');"></i>
-            <i class="icon ion-social-facebook" onclick="window.open('https://www.facebook.com/HooHairApp/', '_system', 'location=yes');"></i>
-            <i class="icon ion-social-instagram" onclick="window.open('https://www.instagram.com/hoohair/', '_system', 'location=yes');"></i>
-            <i class="icon ion-social-youtube" onclick="window.open('https://www.youtube.com/watch?v=HpzPqKaw-IU', '_system', 'location=yes');"></i>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            Cut the hassle of booking hair appointments with the Hoohair app
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <hr/>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            Be the first to know about Hoohair!
-          </div>
-        </div>
-        <div ng-controller="formController" delegate-handle="formScroll">
-          <div class="row">
+      <ion-content scroll=false>
+        <div id="main-page" class="padding">
+          <div class="row row-header">
             <div class="col">
-              <label class="item item-input form-item">
-                <input type="text"  placeholder="First name"/>
-              </label>
-              <label class="item item-input form-item">
-                <input type="text" placeholder="Last name"/>
-              </label>
-              <label class="item item-input form-item">
-                <input type="text" placeholder="Email address"/>
-              </label>
+              <h4>Coming soon!</h4>
             </div>
           </div>
           <div class="row">
             <div class="col">
-              <button ng-click="registerdAlert();" class="form-item"><b>REGISTER</b></button>
+              <img id="logo" src="logo.png"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <i class="icon ion-social-twitter" onclick="window.open('http://www.twitter.com/nraboy', '_system', 'location=yes');restoreIcon(this);"></i>
+              <i class="icon ion-social-facebook" onclick="window.open('https://www.facebook.com/HooHairApp/', '_system', 'location=yes');restoreIcon(this);"></i>
+              <i class="icon ion-social-instagram" onclick="window.open('https://www.instagram.com/hoohair/', '_system', 'location=yes');restoreIcon(this);"></i>
+              <i class="icon ion-social-youtube" onclick="window.open('https://www.youtube.com/watch?v=HpzPqKaw-IU', '_system', 'location=yes');restoreIcon(this);"></i>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              Cut the hassle of booking hair appointments with the Hoohair app
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <hr/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              Be the first to know about Hoohair!
+            </div>
+          </div>
+          <div ng-controller="formController" delegate-handle="formScroll">
+            <div class="row">
+              <div class="col">
+                <div ng-repeat="item in items">
+                  <label ng-keypress="keyPress($event)" class="item item-input form-item">
+                    <input id="{{'input_' + item.name}}" ng-model="item.value" type="text" placeholder="{{item.name}}"/>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <button id="submit-button" ng-click="register();" class="form-item"><b>REGISTER</b></button>
+              </div>
             </div>
           </div>
         </div>

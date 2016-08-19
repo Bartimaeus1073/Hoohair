@@ -23,11 +23,96 @@ hoohair.run(function($ionicPlatform) {
   });
 });
 
-hoohair.controller("formController", function($scope, $ionicPopup, $timeout) {
-  $scope.registerdAlert = function() {
+window.addEventListener('native.keyboardshow', keyboardShowHandler);
+window.addEventListener('native.keyboardhide', keyboardHideHandler);
+
+function keyboardShowHandler(e){
+  var amount = e.keyboardHeight;
+
+  document.getElementById("main-page").style.top = "-"+ amount + "px";
+  document.getElementById("main-page").style.bottom = amount + "px";
+}
+
+function keyboardHideHandler(e){
+  document.getElementById("main-page").style.top = "0px";
+  document.getElementById("main-page").style.bottom = "0px";
+}
+
+function restoreIcon(elem) {
+  elem.style.color = "white";
+}
+
+hoohair.controller("formController", function($scope, $ionicScrollDelegate, $ionicPopup, $timeout) {
+  function Item(value, name) {
+    this.value = value;
+    this.name = name;
+  }
+
+  function errorPopup(text) {
     var alertPopup = $ionicPopup.alert({
-      title: 'Thank you for registering!',
-      template: ''
+      title: text,
+      okType: 'button-assertive'
     });
+  }
+
+  function informativePopup(text) {
+    var alertPopup = $ionicPopup.alert({
+      title: text
+    });
+  }
+
+  function insert(email, firstName, lastName) {
+    // check mail existance
+    firebase.database().ref(email).once('value').then(function(snapshot) {
+      var alreadyExists = snapshot.val() != null;
+
+      if (alreadyExists) {
+        errorPopup("Email already exists!");
+      } else {
+        firebase.database().ref(email).set({
+          first_name: firstName,
+          last_name: lastName
+        });
+
+        informativePopup("Thank you for registering!");
+      }
+    });
+  }
+
+  $scope.items = [new Item("", "First Name"),
+                  new Item("", "Last Name"),
+                  new Item("", "Email Address")];
+
+  $scope.keyPress = function($event) {
+    if ($event.keyCode == 13) {
+      for (var i = 0; i < $scope.items.length; i++) {
+        if ($scope.items[i].value == "") {
+          var id = "input_" + $scope.items[i].name;
+          allCompleted = false;
+          document.getElementById(id).focus();
+          return;
+        }
+      }
+      document.getElementById("submit-button").focus();
+    }
+  };
+
+  $scope.register = function() {
+    var firstName = $scope.items[0].value;
+    var lastName = $scope.items[1].value;
+    var email = $scope.items[2].value;
+
+    for (var i = 0; i < $scope.items.length; i++) {
+      if ($scope.items[i].value == "") {
+        errorPopup("All fields are mandatory!");
+        return;
+      }
+    }
+
+    insert(email, firstName, lastName);
+  };
+
+  $scope.scroll = function() {
+    $ionicScrollDelegate.$getByHandle('formScroll').scrollBottom();
   };
 });
