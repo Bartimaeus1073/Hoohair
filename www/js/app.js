@@ -38,22 +38,54 @@ function keyboardHideHandler(e){
   document.getElementById("main-page").style.bottom = "0px";
 }
 
-function restoreIcon(elem) {
-  elem.style.color = "white";
-}
-
 hoohair.controller("formController", function($scope, $ionicScrollDelegate, $ionicPopup, $timeout) {
+  // boolean that prevents multiple popup to appear while inserting into
+  // firebase (true -> is inserting, false -> not inserting)
   $scope.inserting = false;
 
+  // validates name input as Item
+  // returns "" if no error has occoured
+  // else returns the error message
+  function validateName(item) {
+    var error = "";
+
+    if (item.value.length < 4) {
+      error += item.name + " needs to be at least 4 characters long<br>";
+    }
+
+    return error;
+  }
+
+  // validates email input as Item
+  // returns "" if no error has occoured
+  // else returns the error message
+  function validateEmail(item) {
+    var error = "";
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    if (!re.test(item.value)) {
+      error += item.name + " is not valid<br>";
+    }
+
+    return error;
+  }
+
+  // constructor for text input items
   function Item(value, name) {
     this.value = value;
     this.name = name;
   }
 
-  function errorPopup(text, func) {
+  // array that holds the text input informations
+  $scope.items = [new Item("", "First Name"),
+                  new Item("", "Last Name"),
+                  new Item("", "Email Address")];
+
+  // shows an eror Popup
+  function errorPopup(template, func) {
     var myPopup = $ionicPopup.show({
-      template: '',
-      title: text,
+      template: template,
+      title: 'Error',
       scope: $scope,
       buttons: [
         {
@@ -65,10 +97,11 @@ hoohair.controller("formController", function($scope, $ionicScrollDelegate, $ion
     });
   }
 
-  function informativePopup(text, func) {
+  // shows an informative popup
+  function informativePopup(template, func) {
     var myPopup = $ionicPopup.show({
-      template: '',
-      title: text,
+      template: template,
+      title: 'Informative',
       scope: $scope,
       buttons: [
         {
@@ -80,35 +113,40 @@ hoohair.controller("formController", function($scope, $ionicScrollDelegate, $ion
     });
   }
 
-  function insert(email, firstName, lastName) {
+  // this method will insert the credentials into firebase
+  // PRE: credentials are correct
+  function insert(credentials) {
     $scope.inserting = true;
     // check mail existance
-    firebase.database().ref(email).once('value').then(function(snapshot) {
-      var alreadyExists = snapshot.val() != null;
+    var path = "users/";
+    firebase.database().ref(path).once('value').then(function(snapshot) {
+      var alreadyExists = false;//snapshot.val() != null;
 
       if (alreadyExists) {
         errorPopup("Email already exists!", function() {
           $scope.inserting = false;
         });
       } else {
-        firebase.database().ref(email).set({
-          first_name: firstName,
-          last_name: lastName
-        });
-
-        informativePopup("Thank you for registering!", function() {
-          $scope.inserting = false;
+        firebase.database().ref(path).push({
+          first_name: credentials.firstName,
+          last_name: credentials.lastName,
+          email: credentials.email
+        }).then(function() {
+          informativePopup("Thank you for registering!", function() {
+            $scope.inserting = false;
+          });
         });
       }
     });
   }
 
-  $scope.items = [new Item("", "First Name"),
-                  new Item("", "Last Name"),
-                  new Item("", "Email Address")];
-
+  // handles keyboard key press
   $scope.keyPress = function($event) {
+    // checks press of return button on keyboard
     if ($event.keyCode == 13) {
+      // searches for all text input values of the mandatory fields
+      // to be not null, and if there is a null fields
+      // it will foucs on that field
       for (var i = 0; i < $scope.items.length; i++) {
         if ($scope.items[i].value == "") {
           var id = "input_" + $scope.items[i].name;
@@ -124,19 +162,22 @@ hoohair.controller("formController", function($scope, $ionicScrollDelegate, $ion
         document.getElementById(id).blur();
       }
 
+      // return acts as submit button
       $scope.register();
     }
   };
 
+  // validates credentials and sends them to firebase
   $scope.register = function() {
     if ($scope.inserting == true) {
       return;
     }
 
-    var firstName = $scope.items[0].value;
-    var lastName = $scope.items[1].value;
-    var email = $scope.items[2].value;
+    var firstName = $scope.items[0];
+    var lastName = $scope.items[1];
+    var email = $scope.items[2];
 
+    // validate inputs
     for (var i = 0; i < $scope.items.length; i++) {
       if ($scope.items[i].value == "") {
         errorPopup("All fields are mandatory!");
@@ -144,10 +185,21 @@ hoohair.controller("formController", function($scope, $ionicScrollDelegate, $ion
       }
     }
 
-    insert(email, firstName, lastName);
-  };
+    var errorMessage = "";
 
-  $scope.scroll = function() {
-    $ionicScrollDelegate.$getByHandle('formScroll').scrollBottom();
+    errorMessage += validateName(firstName);
+    errorMessage += validateName(lastName);
+    errorMessage += validateEmail(email);
+
+    if (errorMessage != "") {
+      errorPopup(errorMessage);
+      return
+    }
+
+    insert({
+      firstName: firstName.value,
+      lastName: lastName.value,
+      email: email.value
+    });
   };
 });
