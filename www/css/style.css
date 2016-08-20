@@ -33,7 +33,7 @@ ion-content {
   margin: auto;
 }
 
-#main-page button:hover {
+#main-page button.activated {
   color: black;
   background-color: white;
 }
@@ -59,7 +59,7 @@ ion-content {
   margin: 0px 10px;
 }
 
-#main-page i:hover {
+#main-page i.activated {
   color: #333;
 }
 

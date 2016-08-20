@@ -38,10 +38,22 @@ function keyboardHideHandler(e){
   document.getElementById("main-page").style.bottom = "0px";
 }
 
-hoohair.controller("formController", function($scope, $ionicScrollDelegate, $ionicPopup, $timeout) {
+hoohair.controller("formController", function($scope, $ionicPopup) {
+  // constructor for text input items
+  function Item(value, name, type) {
+    this.value = value;
+    this.name = name;
+    this.type = type;
+  }
+
   // boolean that prevents multiple popup to appear while inserting into
   // firebase (true -> is inserting, false -> not inserting)
   $scope.inserting = false;
+
+  // array that holds the text input informations
+  $scope.items = [new Item("", "First Name", "text"),
+                  new Item("", "Last Name", "text"),
+                  new Item("", "Email Address", "email")];
 
   // validates name input as Item
   // returns "" if no error has occoured
@@ -70,17 +82,6 @@ hoohair.controller("formController", function($scope, $ionicScrollDelegate, $ion
     return error;
   }
 
-  // constructor for text input items
-  function Item(value, name) {
-    this.value = value;
-    this.name = name;
-  }
-
-  // array that holds the text input informations
-  $scope.items = [new Item("", "First Name"),
-                  new Item("", "Last Name"),
-                  new Item("", "Email Address")];
-
   // shows an eror Popup
   function errorPopup(template, func) {
     var myPopup = $ionicPopup.show({
@@ -100,8 +101,7 @@ hoohair.controller("formController", function($scope, $ionicScrollDelegate, $ion
   // shows an informative popup
   function informativePopup(template, func) {
     var myPopup = $ionicPopup.show({
-      template: template,
-      title: 'Informative',
+      title: template,
       scope: $scope,
       buttons: [
         {
@@ -206,4 +206,25 @@ hoohair.controller("formController", function($scope, $ionicScrollDelegate, $ion
       email: email.value
     });
   };
+});
+
+hoohair.controller("socialController", function($scope) {
+    // constructor for social links
+    function Social(type, link) {
+      this.type = type;
+      this.link = link;
+    }
+
+    // array that holds social links
+    $scope.socialLinks = [
+      new Social("twitter", "https://twitter.com/hoohair"),
+      new Social("facebook", "https://www.facebook.com/HooHairApp/"),
+      new Social("instagram", "https://www.instagram.com/hoohair/"),
+      new Social("youtube", "https://www.youtube.com/watch?v=HpzPqKaw-IU")
+    ];
+
+    // open specified link
+    $scope.open = function(link) {
+      window.open(link, '_system', 'location=yes');
+    };
 });
