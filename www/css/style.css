@@ -17,7 +17,7 @@ ion-content {
 }
 
 #main-page #logo {
-  max-width: 100%;
+  max-width: 300px;
 }
 
 #main-page > .row {
@@ -26,6 +26,8 @@ ion-content {
 
 #main-page .row-header {
   flex-grow: 1.5;
+  display: flex;
+  align-items: center;
 }
 
 #main-page h4 {
@@ -34,13 +36,19 @@ ion-content {
 }
 
 #main-page button {
+  color: white;
   padding: 8px 20px;
   margin: auto;
+  text-transform: uppercase;
 }
 
 #main-page button.activated {
-  color: black;
+  color: #5ACEFB;
   background-color: white;
+}
+
+#main-page label {
+  max-width: 250px;
 }
 
 #main-page input {
@@ -51,16 +59,25 @@ ion-content {
   border: none;
   height: 1px;
   background-color: white;
+  max-width: 500px;
 }
 
 #main-page i {
-  color: #fff;
-  font-size: 40px;
+  display: inline-block;
+  color: #58DDE3;
+  font-size: 25px;
   margin: 0px 10px;
+  background-color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  opacity: 1;
 }
 
 #main-page i.activated {
-  color: #333;
+  background-color: #333;
+  opacity: 0.4;
 }
 
 #main-page .form-item {
