@@ -1,8 +1,3 @@
-// Ionic Starter App
-
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
 var hoohair = angular.module('Hoohair', ['ionic']);
 
 hoohair.run(function($ionicPlatform) {
@@ -23,6 +18,8 @@ hoohair.run(function($ionicPlatform) {
   });
 });
 
+
+// event listeners for keyboard hiding and showing
 window.addEventListener('native.keyboardshow', keyboardShowHandler);
 window.addEventListener('native.keyboardhide', keyboardHideHandler);
 
@@ -149,7 +146,7 @@ hoohair.controller("formController", function($scope, $ionicPopup) {
     // checks press of return button on keyboard
     if ($event.keyCode == 13) {
       // searches for all text input values of the mandatory fields
-      // to be not null, and if there is a null fields
+      // to be not null, and if there is a null field
       // it will foucs on that field
       for (var i = 0; i < $scope.items.length; i++) {
         if ($scope.items[i].value == "") {
@@ -173,7 +170,7 @@ hoohair.controller("formController", function($scope, $ionicPopup) {
 
   // validates credentials and sends them to firebase
   $scope.register = function() {
-    if ($scope.inserting == true) {
+    if ($scope.inserting) {
       return;
     }
 

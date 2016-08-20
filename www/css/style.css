@@ -17,7 +17,7 @@ ion-content {
 }
 
 #main-page #logo {
-  max-width:100%;
+  max-width: 100%;
 }
 
 #main-page > .row {
@@ -26,6 +26,11 @@ ion-content {
 
 #main-page .row-header {
   flex-grow: 1.5;
+}
+
+#main-page h4 {
+  color: white;
+  margin: 20px auto;
 }
 
 #main-page button {
@@ -40,11 +45,6 @@ ion-content {
 
 #main-page input {
   color: white;
-}
-
-#main-page h4 {
-  color: white;
-  margin: 20px auto;
 }
 
 #main-page hr {
